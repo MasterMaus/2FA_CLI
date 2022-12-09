@@ -16,6 +16,7 @@ int main(int argc, char *argv[]) {
 //
 //    std::cout<< cryptlite::hmac<cryptlite::sha1>::calc_hex(count, 8, secret, 20) << std::endl;
 
+    std::cout<<token_generator::gen_counter()<<std::endl;
 
 return 0;
 }

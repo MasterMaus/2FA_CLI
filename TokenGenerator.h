@@ -10,6 +10,8 @@
 #include <boost/algorithm/string.hpp>
 #include <regex>
 #include <iostream>
+#include <ctime>
+#include <chrono>
 
 namespace token_generator {
 
@@ -19,8 +21,8 @@ namespace token_generator {
     // Generates an TOTP token for the current time
     std::string gen_OTP(std::string key, int =6);
 
-    // Generates the counter from current time
-    unsigned long gen_counter();
+    // Generates the counter from current time, default value for time_step is 30 seconds. --> for how long is an OTP valid
+    unsigned long gen_counter(int = 30);
 
     // Truncates the hash with the protocol described in RFC4226, and returns the integer
     int truncate(std::string hash);

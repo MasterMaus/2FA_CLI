@@ -20,7 +20,6 @@ namespace token_generator {
             counter >>= 8;
         }
 
-        boost::to_upper(key); // Make the key uppercase
         std::string hash = cryptlite::hmac<cryptlite::sha1>::calc_hex(message, 8, (uint8_t *) key.c_str(), key.size());
         std::cout<< hash << std::endl;
         auto otp = truncate(hash) % (int) pow(10,n);
@@ -38,8 +37,9 @@ namespace token_generator {
     }
 
 // Generates the counter from current time
-    unsigned long gen_counter() {
-        return 1;
+    unsigned long gen_counter(int x) {
+        unsigned long timestamp = duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+        return timestamp/x; // Integer division
     }
 
     int truncate(std::string hash) {
