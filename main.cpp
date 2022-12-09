@@ -4,19 +4,18 @@
 
 
 void test_truncate();
+void test_HOTP();
 
 int main(int argc, char *argv[]) {
 //    parser::InputParser input(argc, argv);
 //    std::cout << "Hello, World!" << std::endl;
 
     test_truncate();
+    test_HOTP();
 
-//    uint8_t secret [20] = {0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x30};
-//    uint8_t count [8] = {0,0,0,0,0,0,0,2};
-//
-//    std::cout<< cryptlite::hmac<cryptlite::sha1>::calc_hex(count, 8, secret, 20) << std::endl;
+    uint8_t secret [10] = {0x0a,0x6c,0xae,0xcb,0xc2,0xf0,0x70,0xca,0x96,0x73};
 
-    std::cout<<token_generator::gen_counter()<<std::endl;
+    std::cout<<token_generator::gen_OTP(secret, 10)<<std::endl;
 
 return 0;
 }
@@ -33,4 +32,17 @@ void test_truncate() {
     assert(token_generator::truncate("a4fb960c0bc06e1eabb804e5b397cdc4b45596fa") == 82162583);
     assert(token_generator::truncate("1b3c89f65e6c9e883012052823443f048b4332db") == 673399871);
     assert(token_generator::truncate("1637409809a679dc698207310c8c7fc07290d9e5") == 645520489);
+}
+
+void test_HOTP() {
+    // 12345678901234567890 (ASCII) becomes secret[20]
+    uint8_t secret [20] = {0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x30,0x31,0x32,0x33,0x34,0x35,0x36,0x37,0x38,0x39,0x30};
+
+    //https://www.ietf.org/rfc/rfc6238.txt page 14
+    assert(token_generator::gen_OTP(secret, 20, 0x1,8).compare(std::string("94287082"))==0);
+    assert(token_generator::gen_OTP(secret, 20, 0x23523EC,8).compare(std::string("07081804"))==0);
+    assert(token_generator::gen_OTP(secret, 20, 0x23523ED,8).compare(std::string("14050471"))==0);
+    assert(token_generator::gen_OTP(secret, 20, 0x273EF07,8).compare(std::string("89005924"))==0);
+    assert(token_generator::gen_OTP(secret, 20, 0x3F940AA,8).compare(std::string("69279037"))==0);
+    assert(token_generator::gen_OTP(secret, 20, 0x27BC86AA,8).compare(std::string("65353130"))==0);
 }

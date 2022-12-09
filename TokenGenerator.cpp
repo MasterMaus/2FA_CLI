@@ -4,24 +4,25 @@
 #include "TokenGenerator.h"
 #include "include/cryptlite/sha1.h"
 
+#define TEXT_LEN 8
+
 
 
 namespace token_generator {
 
 // Generates an HOTP token with the key and counter given in the parameters
-    std::string gen_OTP(std::string key, unsigned long counter, int n) {
+    std::string gen_OTP(uint8_t *key, int key_len, unsigned long counter, int n) {
         assert(6 >= n <= 10); // According to RFC4226 standards. 6 is default. up to 10 numbers is possible
 
-        uint8_t message[8];
+        uint8_t message[TEXT_LEN] ;
 
-        for (int i = 8; i >= 0; i--)
+        for (int i = TEXT_LEN-1; i >= 0; i--)
         {
             message[i] = counter & 0xff;
             counter >>= 8;
         }
 
-        std::string hash = cryptlite::hmac<cryptlite::sha1>::calc_hex(message, 8, (uint8_t *) key.c_str(), key.size());
-        std::cout<< hash << std::endl;
+        std::string hash = cryptlite::hmac<cryptlite::sha1>::calc_hex(message, TEXT_LEN, key, key_len);
         auto otp = truncate(hash) % (int) pow(10,n);
 
         // TODO: do i really need a stringstream to do this?
@@ -31,9 +32,9 @@ namespace token_generator {
     }
 
 // Generates an TOTP token for the current time
-    std::string gen_OTP(std::string key, int n) {
+    std::string gen_OTP(uint8_t * key, int key_len, int n) {
         auto counter = gen_counter();
-        return gen_OTP(key, counter, n);
+        return gen_OTP(key, key_len, counter, n);
     }
 
 // Generates the counter from current time
