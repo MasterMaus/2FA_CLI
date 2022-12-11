@@ -15,7 +15,7 @@ namespace fs = std::filesystem;
 
 void init(fs::path pathToFile); //that checks if the file + path exist
 
-void writeSecret(fs::path path, std::string name, uint8_t * secret, int secret_len); //function to write a secret into binary file
+void writeSecret(fs::path path, std::string name, const uint8_t * secret, int secret_len); //function to write a secret into binary file
 
 void test_truncate();
 void test_HOTP();
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 
     uint8_t secret [10] = {0x0a,0x6c,0xae,0xcb,0xc2,0xf0,0x70,0xca,0x96,0x73};
 
-    writeSecret(pathToFile, std::string("test"), secret, 10);
+    writeSecret(pathToFile, std::string("saxion"), secret, 10);
 
     //uint8_t secret [10];
     //data.read(reinterpret_cast<char *>(secret), 10);
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 return 0;
 }
 
-void writeSecret(fs::path path, std::string name, uint8_t * secret, int secret_len) {
+void writeSecret(fs::path path, std::string name, const uint8_t * secret, int secret_len) {
     std::ofstream file(path, std::ios::out | std::ios::binary | std::ios::app);
 
     char prefixSecret [3];
@@ -53,16 +53,21 @@ void writeSecret(fs::path path, std::string name, uint8_t * secret, int secret_l
     prefixSecret[1] = PREFIX_NEW_SECRET >> 8;
     prefixSecret[2] = PREFIX_NEW_SECRET >> 16;
 
-
     file.write((prefixSecret), 3);
+
+    uint8_t flag1 = name.size();
+    uint8_t flag2 = secret_len;
+
+    file.put(flag1); // options bit + length of the key id in bytes
+    file.put(flag2); // length of the secret in bytes
+
     file.write(name.c_str(), name.size());
-    file.put(PREFIX_KEY);
-    file.write(reinterpret_cast<const char *> (secret), secret_len);
-    file.put(SUFFIX_KEY);
+    file.write(reinterpret_cast<const char *>(secret), secret_len);
 
     //todo think about implementing options. like, HOTP, size of the token and time
-    std::cout << "geheim geschreven" << std::endl;
 }
+
+
 
 void init(fs::path path) {
     // check if file exists, if not, create one
