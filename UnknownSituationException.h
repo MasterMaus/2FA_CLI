@@ -13,12 +13,12 @@ namespace exceptions {
     public:
 
         // Construct with given error message:
-        UnknownSituationException(const char *error = "Functionality not yet implemented!") {
+        UnknownSituationException(const char *error = "Something unexpected happened!") {
             errorMessage = error;
         }
 
         // Provided for compatibility with std::exception.
-        const char *what() const noexcept {
+        const char *what() const noexcept override {
             return errorMessage.c_str();
         }
 
