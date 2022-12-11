@@ -4,7 +4,9 @@
 
 #include "InputParser.h"
 #include "TokenGenerator.h"
+#include "Key.h"
 
+#include "UnknownSituationException.h"
 #define PREFIX_NEW_SECRET 0xFFFFFF
 
 #define PREFIX_KEY 0xB0
@@ -20,6 +22,8 @@ void writeSecret(fs::path path, std::string name, const uint8_t * secret, int se
 void test_truncate();
 void test_HOTP();
 
+
+
 int main(int argc, char *argv[]) {
     fs::path pathToFile = fs::path(getenv("HOME"))
             .append(".config")
@@ -33,14 +37,19 @@ int main(int argc, char *argv[]) {
 
     uint8_t secret [10] = {0x0a,0x6c,0xae,0xcb,0xc2,0xf0,0x70,0xca,0x96,0x73};
 
-    writeSecret(pathToFile, std::string("saxion"), secret, 10);
+    //auto x = mfa::Key("saxion", secret, 10);
+    auto x2 = mfa::Key("saxion", std::string("bjwk5s6c6bymvftt"));
+
+
+
+    //writeSecret(pathToFile, std::string("saxion"), secret, 10);
 
     //uint8_t secret [10];
     //data.read(reinterpret_cast<char *>(secret), 10);
 
 
 
-    std::cout<<token_generator::gen_OTP(secret, 10)<<std::endl;
+    //std::cout<<token_generator::gen_OTP(secret, 10)<<std::endl;
 
 return 0;
 }
@@ -49,9 +58,9 @@ void writeSecret(fs::path path, std::string name, const uint8_t * secret, int se
     std::ofstream file(path, std::ios::out | std::ios::binary | std::ios::app);
 
     char prefixSecret [3];
-    prefixSecret[0] = PREFIX_NEW_SECRET >> 0;
-    prefixSecret[1] = PREFIX_NEW_SECRET >> 8;
-    prefixSecret[2] = PREFIX_NEW_SECRET >> 16;
+    prefixSecret[0] = (char) (PREFIX_NEW_SECRET >> 0);
+    prefixSecret[1] = (char) (PREFIX_NEW_SECRET >> 8);
+    prefixSecret[2] = (char) (PREFIX_NEW_SECRET >> 16);
 
     file.write((prefixSecret), 3);
 
