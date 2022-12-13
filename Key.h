@@ -167,14 +167,14 @@ namespace mfa {
             uint8_t flag1 = m_id.size();
             uint8_t flag2 = m_key.size();
 
-            file.put((char) flag1); // options bit + length of the key id in bytes
+            file.put((char) flag1); // posix_options bit + length of the key id in bytes
             file.put((char) flag2); // length of the secret in bytes
 
             file.write(m_id.c_str(),m_id.size());
             for(auto c : m_key) {
                 file.put((char)c);
             }
-            //todo think about implementing options. like, HOTP, size of the token and time
+            //todo think about implementing posix_options. like, HOTP, size of the token and time
         }
 
         static void nextSecret(std::ifstream &stream) {

@@ -5,6 +5,7 @@
 #include "InputParser.h"
 #include "TokenGenerator.h"
 #include "Key.h"
+#include "Options.h"
 
 #include "UnknownSituationException.h"
 
@@ -31,6 +32,14 @@ int main(int argc, char *argv[]) {
 
 
     parser::InputParser input(argc, argv);
+
+
+    if (input.count() == 0) { //
+        //posix_options::executeHelp();
+    }
+    for (auto&& [option, args] : input.getmap()) {
+        posix_options::executeOption(option, args);
+    }
 
     std::cout << input.count();
 
