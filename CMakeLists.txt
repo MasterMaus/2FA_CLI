@@ -8,4 +8,4 @@ FIND_PACKAGE(Boost REQUIRED)
 LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
 
-add_executable(2FA_CLI main.cpp options.h InputParser.h TokenGenerator.h TokenGenerator.cpp Key.h NotImplementedException.h)
+add_executable(2FA_CLI main.cpp options.h InputParser.h TokenGenerator.h TokenGenerator.cpp Key.h NotImplementedException.h InvalidArgumentsException.h)

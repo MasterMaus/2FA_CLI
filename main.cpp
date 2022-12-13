@@ -8,14 +8,13 @@
 
 #include "UnknownSituationException.h"
 
-#define PREFIX_KEY 0xB0
-#define SUFFIX_KEY 0x0D
-#define PREFIX_OPTIONS 0xAA
-
 namespace fs = std::filesystem;
 
+// main functions
 void init(const fs::path& pathToFile); //that checks if the file + path exist
 
+
+//test functions
 void test_truncate();
 void test_HOTP();
 
@@ -31,25 +30,9 @@ int main(int argc, char *argv[]) {
     init(pathToFile);
 
 
+    parser::InputParser input(argc, argv);
 
-    //parser::InputParser input(argc, argv);
-
-
-    //uint8_t secret [10] = {0x0a,0x6c,0xae,0xcb,0xc2,0xf0,0x70,0xca,0x96,0x73};
-
-    //auto x = mfa::Key("saxion", secret, 10);
-    auto x2 = mfa::Key("saxion", std::string("bjwk5s6c6bymvftt"));
-    //x2.writeSecret(pathToFile);
-
-    auto x3 = mfa::Key(std::string{"test"}, pathToFile);
-
-    std::cout << x3.getOTP()<<std::endl;
-    std::cout << x2.getOTP()<<std::endl;
-
-
-
-    test_HOTP();
-    test_truncate();
+    std::cout << input.count();
 
 return 0;
 }

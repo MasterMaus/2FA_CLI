@@ -15,12 +15,14 @@
 #include "UnknownSituationException.h"
 
 #define PREFIX_NEW_SECRET 0xFFFFFF
+#define PREFIX_OPTIONS 0xAA
+
 
 
 namespace fs = std::filesystem;
 
 namespace b32 {
-    const char dectable[128] = {
+    const static char DECTABLE[128] = {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -79,10 +81,10 @@ namespace b32 {
                     break;
                 }
                 decoded = decoded << 5;
-                if(b32::dectable[toascii(c)] == -1) {
+                if(b32::DECTABLE[toascii(c)] == -1) {
                     throw exceptions::UnknownSituationException("this string contains a non valid base32 character");
                 }
-                decoded += b32::dectable[toascii(c)];
+                decoded += b32::DECTABLE[toascii(c)];
             }
 
             for (; byte > 0; byte--) {
