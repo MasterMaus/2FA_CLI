@@ -41,12 +41,17 @@ namespace parser {
                             if(c == '-') continue;
 
                             posix_options::Options flag = posix_options::find(c);
-                            if (flag == posix_options::Options::invalid) throw exceptions::InvalidArgumentsException();
+                            if (flag == posix_options::Options::invalid || !posix_options::isFlag(flag))
+                                throw exceptions::InvalidArgumentsException();
 
                             m_options[flag] = {};
                         }
                     } else {
-                        //short option
+                        //short option (not a flag!!!)
+                        posix_options::Options option = posix_options::find(arg[1]);
+                        int min_args = posix_options::OPTIONS
+                        //find minmax to read the next arguments
+
                     }
                 }
             }
@@ -62,15 +67,7 @@ namespace parser {
 
     private:
         std::map<posix_options::Options, std::vector<std::string> > m_options; //use map
-        //std::vector <std::pair<posix_options::posix_options, std::vector <std::string> > > m_options; // key-value where the key is the option and the value is its arguments if any
-        //TODO
-        // Q: where do i specify if an option has 0, 1, defined or undefined ammount of arguments
-        // A: Could be solved by reading a file of some sorts. However, I think the valid posix_options + amount of arguments should be known at compile time
-        // A2: solve by declaring all of this in a header file
-        //
-        //TODO
-        // if an option has undefined amount of arguments, how does the program know something is a non-option argument or option argument.
-        // However, both the ls as the TOTP don't have this problem
+
     };
 
 #endif //CLI_TEST_INPUTPARSER_H

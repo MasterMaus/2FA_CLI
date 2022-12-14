@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+#include "InvalidArgumentsException.h"
+
 
 
 // long-option, short-option, minimum amount of arguments, maximum amount of arguments, description
@@ -25,22 +27,24 @@ namespace posix_options {
     const static std::string D_REMOVE = "Remove a key from the database.";
     const static std::string D_GENERATE = "Generate the current valid token. This option needs to get a valid identifier.\n"
                                           "A number n may be added after the identifier to generate the current + n tokens after. \n"
-                                          "The program defaults to this option when only an identifier is passed"; //add specific posix_options for how many tokens, add the window of validity next to it
+                                          "The program defaults to this option when no options are set."; //add specific posix_options for how many tokens, add the window of validity next to it
 
 
 
     const static std::vector<
             std::tuple<Options, std::string, char, bool, int, int, std::string>> OPTIONS {
         std::tuple<Options, std::string, char, bool, int, int, std::string> {version, "version", 'v', true, 0, 0, D_VERSION},
-        std::tuple<Options, std::string, char, bool, int, int, std::string> {help, "help", 'h', true, 0, 1, D_HELP},
+        std::tuple<Options, std::string, char, bool, int, int, std::string> {help, "help", 'h', false, 0, 1, D_HELP},
         std::tuple<Options, std::string, char, bool, int, int, std::string> {add, "add", 'a', false, 2, 2, D_ADD},
 //        std::tuple<posix_options, std::string, char, bool, int, int, std::string> {remove, "remove", 'r', false, 1, 1, D_REMOVE},
         std::tuple<Options, std::string, char, bool, int, int, std::string> {generate, "generate", 'g', false, 1, 2, D_GENERATE}
     };
 
-    //helper to translate option identifier to enum
+    //helper functions to translate option identifier to enum
     Options find(char c);
     Options find(std::string s);
+
+    bool isFlag(Options o);
 
     //big switch statement
     void executeOption(const Options option, const std::vector<std::string>);

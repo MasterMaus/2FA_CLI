@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
 
 
     if (input.count() == 0) { //
-        //posix_options::executeHelp();
+        posix_options::executeHelp();
     }
     for (auto&& [option, args] : input.getmap()) {
         posix_options::executeOption(option, args);
