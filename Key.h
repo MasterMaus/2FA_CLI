@@ -105,7 +105,7 @@ namespace mfa {
     class Key {
     public:
         // constructors
-        Key(std::string id, std::string secret, encoding enc = encoding::B32) : m_id{std::move(id)} {
+        Key(const std::string id, const std::string secret, const encoding enc = encoding::B32) : m_id{std::move(id)} {
             switch (enc) {
                 case encoding::B32 :
                     m_key = b32::base32decode(std::move(secret));
@@ -119,7 +119,7 @@ namespace mfa {
             }
         }
 
-        Key(std::string id, const fs::path& path) : m_id{std::move(id)} {
+        Key(const std::string id, const fs::path& path) : m_id{std::move(id)} {
 
             std::ifstream file{path, std::ios::in | std::ios::binary};
             bool match = false;
@@ -190,7 +190,7 @@ namespace mfa {
                 // TOTP
                 return token_generator::gen_OTP(m_key);
             } else {
-                throw exceptions::NotImplementedException();
+                throw exceptions::NotImplementedException("Generating HOTP tokens is currently not yet implemented");
             }
         }
 

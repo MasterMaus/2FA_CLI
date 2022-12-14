@@ -51,6 +51,7 @@ namespace posix_options {
             case generate:
                 //TODO do different things if there are more arguments!
                 executeGenerate(args.at(0));
+                break;
             default:
                 throw exceptions::InvalidArgumentsException("Trying to execute a non existant option");
         }
@@ -90,8 +91,10 @@ namespace posix_options {
         }
     }
 
-    void executeAdd(const std::string id, const std::string key, const mfa::encoding) {
-        throw exceptions::NotImplementedException("executeAdd");
+    void executeAdd(const std::string id, const std::string key, const mfa::encoding enc) {
+        auto generator = mfa::Key(id, key, enc);
+        generator.writeSecret(PATH_TO_FILE);
+        std::cout<<generator.getOTP()<<std::endl;
     }
 
     void executeRemove() {
