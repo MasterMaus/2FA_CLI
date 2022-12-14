@@ -1,10 +1,7 @@
 #include <iostream>
 #include <filesystem>
-#include <fstream>
 
 #include "InputParser.h"
-#include "TokenGenerator.h"
-#include "Key.h"
 #include "Options.h"
 
 #include "UnknownSituationException.h"
@@ -24,11 +21,8 @@ void test_HOTP();
 
 
 int main(int argc, char *argv[]) {
-    fs::path pathToFile = fs::path(getenv("HOME"))
-            .append(".config")
-            .append("2FA")
-            .append("data");
-    init(pathToFile);
+
+    init(PATH_TO_FILE);
 
 
     parser::InputParser input(argc, argv);
@@ -39,8 +33,7 @@ int main(int argc, char *argv[]) {
         posix_options::executeHelp();
     }
     for (auto&& [option, args] : input.getmap()) {
-        //posix_options::executeOption(option, args);
-        std::cout<<std::get<LONG_OPTION>(posix_options::OPTIONS.at(option));
+        posix_options::executeOption(option, args);
     }
 return 0;
 }

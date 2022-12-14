@@ -11,6 +11,13 @@
 #include <map>
 
 #include "InvalidArgumentsException.h"
+#include "NotImplementedException.h"
+#include <iostream>
+#include "Key.h"
+
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 #define LONG_OPTION 0
 #define SHORT_OPTION 1
@@ -18,6 +25,12 @@
 #define MIN_ARG 3
 #define MAX_ARG 4
 #define DESCRIPTION 5
+
+// TODO potentially, set this to default, let it be able to change from a .config file in home folder
+const static fs::path PATH_TO_FILE = fs::path(getenv("HOME"))
+        .append(".config")
+        .append("2FA")
+        .append("data");
 
 // long-option, short-option, flag, minimum amount of arguments, maximum amount of arguments, description
 namespace posix_options {
@@ -39,18 +52,11 @@ namespace posix_options {
     const static std::map<Options, std::tuple<std::string, char, bool, int, int, std::string> > OPTIONS {
             {version, {"version", 'v', true, 0, 0, D_VERSION}},
             {help, {"help", 'h', false, 0, 1, D_HELP}},
-            {add, {"add", 'a', false, 2, 2, D_ADD}},
+            {add, {"add", 'a', false, 2, 2, D_ADD}}, // actually might need max 3 args; id, secret, encoding
 //        {remove, {"remove", 'r', false, 1, 1, D_REMOVE}},
             {generate, {"generate", 'g', false, 1, 2, D_GENERATE}}
     };
 
-//    const static std::vector<std::tuple<Options, std::string, char, bool, int, int, std::string>> OPTIONS {
-//        {version, "version", 'v', true, 0, 0, D_VERSION},
-//        {help, "help", 'h', false, 0, 1, D_HELP},
-//        {add, "add", 'a', false, 2, 2, D_ADD},
-////        {remove, "remove", 'r', false, 1, 1, D_REMOVE},
-//        {generate, "generate", 'g', false, 1, 2, D_GENERATE}
-//    };
 
     //helper functions to translate option identifier to enum
     Options find(char c);
@@ -63,9 +69,9 @@ namespace posix_options {
 
     void executeVersion();
     void executeHelp(const std::string arg = "");
-//    static void executeAdd(); // what arguments are passed, and how are those differentiated ;P
+    void executeAdd(const std::string id, const std::string key, const mfa::encoding = mfa::encoding::B32);
     void executeRemove();
-    void executeGenerate(); //DEFAULT
+    void executeGenerate(const std::string id); //DEFAULT
 }
 
 

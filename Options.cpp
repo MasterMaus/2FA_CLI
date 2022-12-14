@@ -2,8 +2,9 @@
 // Created by maurits on 13-12-22.
 //
 
-#include <iostream>
 #include "Options.h"
+
+
 
 namespace posix_options {
 
@@ -42,11 +43,14 @@ namespace posix_options {
                 }
                 break;
             case add:
+                executeAdd(args.at(0), args.at(1));
                 break;
             case remove:
+                executeRemove();
                 break;
             case generate:
-                break;
+                //TODO do different things if there are more arguments!
+                executeGenerate(args.at(0));
             default:
                 throw exceptions::InvalidArgumentsException("Trying to execute a non existant option");
         }
@@ -74,12 +78,29 @@ namespace posix_options {
                 auto short_option = std::get<SHORT_OPTION>(properties);
                 auto long_option = std::get<LONG_OPTION>(properties);
                 auto str_help = std::get<DESCRIPTION>(properties);
-           // for (auto &&[option, long_option, short_option, flag, min_arg, max_arg, str_help]: OPTIONS) {
                 std::cout << '-' << short_option << "\t --" << long_option << "\t\t" << str_help << std::endl;
             }
         } else {
             //specific help
+            auto properties = OPTIONS.at(find(arg));
+            auto short_option = std::get<SHORT_OPTION>(properties);
+            auto long_option = std::get<LONG_OPTION>(properties);
+            auto str_help = std::get<DESCRIPTION>(properties);
+            std::cout << '-' << short_option << "\t --" << long_option << "\t\t" << str_help << std::endl;
         }
+    }
+
+    void executeAdd(const std::string id, const std::string key, const mfa::encoding) {
+        throw exceptions::NotImplementedException("executeAdd");
+    }
+
+    void executeRemove() {
+        throw exceptions::NotImplementedException("executeRemove");
+    }
+
+    void executeGenerate(const std::string id) {
+        auto generator = mfa::Key(id, PATH_TO_FILE);
+        std::cout<<generator.getOTP()<<std::endl;
     }
 
 

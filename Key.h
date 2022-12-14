@@ -8,11 +8,12 @@
 #include <utility>
 #include <vector>
 #include <string>
-#include <iostream>
+#include <fstream>
 #include <filesystem>
 
 #include "NotImplementedException.h"
 #include "UnknownSituationException.h"
+#include "TokenGenerator.h"
 
 #define PREFIX_NEW_SECRET 0xFFFFFF
 #define PREFIX_OPTIONS 0xAA
@@ -148,7 +149,7 @@ namespace mfa {
                     m_key.push_back(file.get());
                 }
             } else {
-                throw exceptions::NotImplementedException();
+                throw exceptions::NotImplementedException("Trying to fetch the secret for a non existant id");
                 //TODO throw different custom exception that i catch somewhere else
             }
 
