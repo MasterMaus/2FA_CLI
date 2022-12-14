@@ -34,6 +34,30 @@ namespace parser {
                 std::string arg{(std::string(argv[i]))};
                 if (arg.starts_with("--")) {
                     // long option found
+                    posix_options::Options option = posix_options::find(arg.substr(2)); // take only the part after --
+
+                    std::vector<std::string> args = {};
+                    int min_args = std::get<MIN_ARG>(posix_options::OPTIONS.at(option));
+                    int max_args = std::get<MAX_ARG>(posix_options::OPTIONS.at(option));
+
+                    for (int a = 0; a < max_args; a++) {
+                        if (i+1 >= argc) {
+                            break; // no more arguments
+                        }
+                        auto argument = std::string(argv[i+1]); // this cant break, because we test if there is at least one more string
+                        if (argument.starts_with('-')) {
+                            // this is not an argument!!
+                            break;
+                        }
+                        args.push_back(argument);
+                        i++;
+                    }
+                    if (args.size() < min_args || args.size() > max_args) {
+                        throw exceptions::InvalidArgumentsException("not enough or too many arguments for this option!");
+                    }
+
+                    m_options[option] = args;
+
                 } else if (arg.starts_with("-")) {
                     if (arg.size() !=2) {
                         //flags
@@ -49,9 +73,58 @@ namespace parser {
                     } else {
                         //short option (not a flag!!!)
                         posix_options::Options option = posix_options::find(arg[1]);
-                        int min_args = posix_options::OPTIONS
-                        //find minmax to read the next arguments
 
+                        std::vector<std::string> args = {};
+                        int min_args = std::get<MIN_ARG>(posix_options::OPTIONS.at(option));
+                        int max_args = std::get<MAX_ARG>(posix_options::OPTIONS.at(option));
+
+                        for (int a = 0; a < max_args; a++) {
+                            if (i+1 >= argc) {
+                                break; // no more arguments
+                            }
+                            auto argument = std::string(argv[i+1]); // this cant break, because we test if there is at least one more string
+                            if (argument.starts_with('-')) {
+                                // this is not an argument!!
+                                break;
+                            }
+                            args.push_back(argument);
+                            i++;
+                        }
+                        if (args.size() < min_args || args.size() > max_args) {
+                            throw exceptions::InvalidArgumentsException("not enough or too many arguments for this option!");
+                        }
+
+                        m_options[option] = args;
+                    }
+                } else {
+                    // default option (generate)
+                    posix_options::Options option = posix_options::Options::generate;
+
+                    std::vector<std::string> args = {};
+                    int min_args = std::get<MIN_ARG>(posix_options::OPTIONS.at(option));
+                    int max_args = std::get<MAX_ARG>(posix_options::OPTIONS.at(option));
+
+                    for (int a = 0; a < max_args; a++) {
+                        if (i >= argc) {
+                            break; // no more arguments
+                        }
+                        auto argument = std::string(argv[i]); // The thing on i is already an argument, not an option
+                        if (argument.starts_with('-')) {
+                            // this is not an argument!!
+                            break;
+                        }
+                        args.push_back(argument);
+                        i++;
+                    }
+                    if (args.size() < min_args || args.size() > max_args) {
+                        throw exceptions::InvalidArgumentsException("not enough or too many arguments for this option!");
+                    }
+
+                    m_options[option] = args;
+
+                    if (i < argc) {
+                        // there are still options or arguments, but this is illegal!
+                        throw exceptions::InvalidArgumentsException("Too many arguments!");
                     }
                 }
             }
@@ -67,7 +140,6 @@ namespace parser {
 
     private:
         std::map<posix_options::Options, std::vector<std::string> > m_options; //use map
-
     };
 
 #endif //CLI_TEST_INPUTPARSER_H

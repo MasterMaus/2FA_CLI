@@ -8,12 +8,18 @@
 #include <tuple>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "InvalidArgumentsException.h"
 
+#define LONG_OPTION 0
+#define SHORT_OPTION 1
+#define FLAG 2
+#define MIN_ARG 3
+#define MAX_ARG 4
+#define DESCRIPTION 5
 
-
-// long-option, short-option, minimum amount of arguments, maximum amount of arguments, description
+// long-option, short-option, flag, minimum amount of arguments, maximum amount of arguments, description
 namespace posix_options {
 
     enum Options {
@@ -30,15 +36,21 @@ namespace posix_options {
                                           "The program defaults to this option when no options are set."; //add specific posix_options for how many tokens, add the window of validity next to it
 
 
-
-    const static std::vector<
-            std::tuple<Options, std::string, char, bool, int, int, std::string>> OPTIONS {
-        std::tuple<Options, std::string, char, bool, int, int, std::string> {version, "version", 'v', true, 0, 0, D_VERSION},
-        std::tuple<Options, std::string, char, bool, int, int, std::string> {help, "help", 'h', false, 0, 1, D_HELP},
-        std::tuple<Options, std::string, char, bool, int, int, std::string> {add, "add", 'a', false, 2, 2, D_ADD},
-//        std::tuple<posix_options, std::string, char, bool, int, int, std::string> {remove, "remove", 'r', false, 1, 1, D_REMOVE},
-        std::tuple<Options, std::string, char, bool, int, int, std::string> {generate, "generate", 'g', false, 1, 2, D_GENERATE}
+    const static std::map<Options, std::tuple<std::string, char, bool, int, int, std::string> > OPTIONS {
+            {version, {"version", 'v', true, 0, 0, D_VERSION}},
+            {help, {"help", 'h', false, 0, 1, D_HELP}},
+            {add, {"add", 'a', false, 2, 2, D_ADD}},
+//        {remove, {"remove", 'r', false, 1, 1, D_REMOVE}},
+            {generate, {"generate", 'g', false, 1, 2, D_GENERATE}}
     };
+
+//    const static std::vector<std::tuple<Options, std::string, char, bool, int, int, std::string>> OPTIONS {
+//        {version, "version", 'v', true, 0, 0, D_VERSION},
+//        {help, "help", 'h', false, 0, 1, D_HELP},
+//        {add, "add", 'a', false, 2, 2, D_ADD},
+////        {remove, "remove", 'r', false, 1, 1, D_REMOVE},
+//        {generate, "generate", 'g', false, 1, 2, D_GENERATE}
+//    };
 
     //helper functions to translate option identifier to enum
     Options find(char c);

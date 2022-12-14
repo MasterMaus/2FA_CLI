@@ -8,22 +8,22 @@
 namespace posix_options {
 
     Options find(char c) {
-        for (auto option: OPTIONS) {
-            if (std::get<2>(option) == c) return std::get<0>(option);
+        for (auto&& [option, properties] : OPTIONS) {
+            if (std::get<SHORT_OPTION>(properties) == c) return option;
         }
         return invalid;
     }
 
     Options find(std::string s) {
-        for (auto option: OPTIONS) {
-            if (std::get<1>(option) == s) return std::get<0>(option);
+        for (auto&& [option, properties] : OPTIONS) {
+            if (std::get<LONG_OPTION>(properties) == s) return option;
         }
         return invalid;
     }
 
     bool isFlag(Options o) {
-        for (auto option: OPTIONS) {
-            if (std::get<0>(option) == o) return std::get<3>(option);
+        for (auto&& [option, properties] : OPTIONS) {
+            if (option == o) return std::get<FLAG>(properties);
         }
         throw exceptions::InvalidArgumentsException();
     }
@@ -41,6 +41,14 @@ namespace posix_options {
                     executeHelp(args[0]);
                 }
                 break;
+            case add:
+                break;
+            case remove:
+                break;
+            case generate:
+                break;
+            default:
+                throw exceptions::InvalidArgumentsException("Trying to execute a non existant option");
         }
     }
 
@@ -62,7 +70,11 @@ namespace posix_options {
 
         if (arg == "") {
             //standard help
-            for (auto &&[option, long_option, short_option, flag, min_arg, max_arg, str_help]: OPTIONS) {
+            for (auto &&[option, properties] : OPTIONS) {
+                auto short_option = std::get<SHORT_OPTION>(properties);
+                auto long_option = std::get<LONG_OPTION>(properties);
+                auto str_help = std::get<DESCRIPTION>(properties);
+           // for (auto &&[option, long_option, short_option, flag, min_arg, max_arg, str_help]: OPTIONS) {
                 std::cout << '-' << short_option << "\t --" << long_option << "\t\t" << str_help << std::endl;
             }
         } else {
