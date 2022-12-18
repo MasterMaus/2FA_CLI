@@ -182,6 +182,7 @@ namespace mfa {
             int count = 0;
             while (count != 3 && !stream.eof()) {
                 if (stream.get() == 0xff) count++;
+                else count = 0;
             }
         }
 
